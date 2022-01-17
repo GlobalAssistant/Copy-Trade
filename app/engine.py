@@ -110,12 +110,12 @@ def processOrderUpdate(order):
 	print("=========App works========3=====")
 
 	# todo UPD: check if no concurrent issues for orders processing
-	if int(lastOrderEvent) >= int(orderTradeTime):
+	if lastOrderEvent >= order.orderTradeTime:
 		print("This order already processed for position", positionKey)
 		return False
 	else:
 		# Instead of Redis
-		q = LastOrderEvent(orderKey=orderKey, lastorderevent=string(lastOrderEvent))
+		q = LastOrderEvent(orderKey=orderKey, lastorderevent=order.orderTradeTime)
 		db.session.add(q)
 		db.session.commit()
 		print("=========App works========4=====")

@@ -30,7 +30,7 @@ DROP TABLE IF EXISTS last_order_event;
 CREATE TABLE last_order_event (
 	id integer primary key autoincrement,
 	orderKey string not null,
-	lastorderevent string not null
+	lastorderevent integer not null
 );
 
 DROP TABLE IF EXISTS positionString;

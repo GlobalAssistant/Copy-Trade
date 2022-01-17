@@ -48,7 +48,7 @@ class LastOrderEvent(db.Model):
 	__tablename__ = 'last_order_event'
 	id = db.Column(db.Integer, primary_key = True)
 	orderKey = db.Column(db.String(255))
-	lastorderevent = db.Column(db.String(255))
+	lastorderevent = db.Column(db.Integer)
 
 	# def __init__(self, orderKey, lastorderevent):
 	#	 self.orderKey = orderKey
