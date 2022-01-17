@@ -75,6 +75,7 @@ def createSignal(position, side, otype, positionSizePercentage):
 	request.setOtype("update" if reduce1 else otype)
 	request.setSide(side);
 	request.setOrderType("MARKET")
+	print("=========App works========12=====")
 
 	if reduce1:
 		request.setReduceOrderType("MARKET");
@@ -89,6 +90,8 @@ def createSignal(position, side, otype, positionSizePercentage):
 
 	db.session.add(request)
 	db.session.commit()
+	print("=========App works========13=====")
+
 
 	sendPost(request, zignaly_keys)
 
@@ -104,6 +107,7 @@ def processOrderUpdate(order):
 	# check eventTime to prevent double processing
 	orderKey = "ORDER-" + positionKey
 	lastOrderEvent = LastOrderEvent.query.filter_by(orderKey=orderKey)
+	print("=========App works========3=====")
 
 	# todo UPD: check if no concurrent issues for orders processing
 	if int(lastOrderEvent) >= int(orderTradeTime):
@@ -114,12 +118,15 @@ def processOrderUpdate(order):
 		q = LastOrderEvent(orderKey=orderKey, lastorderevent=string(lastOrderEvent))
 		db.session.add(q)
 		db.session.commit()
+		print("=========App works========4=====")
+
 
 
 	# Check whether it is a new postion or exsited position
 	positionString = positionString.query.filter_by(positionKey=positionKey)
 	positionSizePercentage = None
 	positionSize = round(order.origQty * order.avgPrice / binance_futures_leverage, 2)
+	print("=========App works========5=====")
 
 	if positionString == None:
 		side = "LONG" if order.side == "BUY" else "SELL"
@@ -136,6 +143,8 @@ def processOrderUpdate(order):
 
 		otype = "entry"
 		positionSizePercentage = round(positionSize * 100 / walletBalance, 2)
+		print("=========App works========6=====")
+
 	else:
 		position = OpenPosition()
 		position_json = json.loads(positionString)
@@ -149,6 +158,7 @@ def processOrderUpdate(order):
 			return True
 
 		increase = order.side == "BUY" if position_json["side"] == "LONG" else order.side == "SELL"
+		print("=========App works========7=====")
 
 		if increase :
 			# todo: if position was not reduced yet - recreate take profit
@@ -162,6 +172,8 @@ def processOrderUpdate(order):
 			positionSizePercentage = round(positionSize * 100 / walletBalance, 2)
 			position_json["positionSize"] = position_json["positionSize"] + positionSize
 			position.positionSize = position_json["positionSize"]
+			print("=========App works========8=====")
+
 		else:
 			if position_json["quantity"] == position_json["maxQuantity"]:
 				# todo: if first reduce order - create stop loss order
@@ -182,16 +194,21 @@ def processOrderUpdate(order):
 				position.lastEventTime=position_json["lastEventTime"]
 
 				savePosition(order, position)
+				print("=========App works========9=====")
+
 				return True
 			else:
+				print("=========App works========10=====")
+
 				otype = "update_reduce"
 				positionSizePercentage = round(positionSize * 100 / walletBalance, 2)
 				position_json["positionSize"] = position_json["positionSize"] - positionSize
 				position.positionSize = position_json["positionSize"]
 
-			walletBalance = walletBalance = order.realizedProfit()
+			# walletBalance = walletBalance = order.realizedProfit()
 			position_json["quantity"] = result
 			position.quantity = position_json["quantity"]
+			print("=========App works========11=====")
 
 	createSignal(position, position.getSide(), order.type, positionSizePercentage)
 	# update position with order
@@ -213,35 +230,36 @@ def callback(data_type: 'SubscribeMessageType', event: 'any'):
 	elif  data_type == SubscribeMessageType.PAYLOAD:
 		if(event.eventType == "ORDER_TRADE_UPDATE"):
 			### store filled order to db
-			print("Event Type: ", event.eventType)
-			print("Event time: ", event.eventTime)
-			print("Transaction Time: ", event.transactionTime)
-			print("Symbol: ", event.symbol)
-			print("Client Order Id: ", event.clientOrderId)
-			print("Side: ", event.side)
-			print("Order Type: ", event.type)
-			print("Time in Force: ", event.timeInForce)
-			print("Original Quantity: ", event.origQty)
-			print("Position Side: ", event.positionSide)
-			print("Price: ", event.price)
-			print("Average Price: ", event.avgPrice)
-			print("Stop Price: ", event.stopPrice)
-			print("Execution Type: ", event.executionType)
-			print("Order Status: ", event.orderStatus)
-			print("Order Id: ", event.orderId)
-			print("Order Last Filled Quantity: ", event.lastFilledQty)
-			print("Order Filled Accumulated Quantity: ", event.cumulativeFilledQty)
-			print("Last Filled Price: ", event.lastFilledPrice)
-			print("Commission Asset: ", event.commissionAsset)
-			print("Commissions: ", event.commissionAmount)
-			print("Order Trade Time: ", event.orderTradeTime)
-			print("Trade Id: ", event.tradeID)
-			print("Bids Notional: ", event.bidsNotional)
-			print("Ask Notional: ", event.asksNotional)
-			print("Is this trade the maker side?: ", event.isMarkerSide)
-			print("Is this reduce only: ", event.isReduceOnly)
-			print("stop price working type: ", event.workingType)
-			print("Is this Close-All: ", event.isClosePosition)
+			print("Event Type: ", event.eventType, type(event.eventType))
+			print("Event time: ", event.eventTime, type(event.eventTime))
+			print("Transaction Time: ", event.transactionTime, type(event.transactionTime))
+			print("Symbol: ", event.symbol, type(event.symbol))
+			print("Client Order Id: ", event.clientOrderId, type(event.clientOrderId))
+			print("Side: ", event.side, type(event.side))
+			print("Order Type: ", event.type, type(event.type))
+			print("Time in Force: ", event.timeInForce, type(event.timeInForce))
+			print("Original Quantity: ", event.origQty, type(event.origQty))
+			print("Position Side: ", event.positionSide, type(event.positionSide))
+			print("Price: ", event.price, type(event.price))
+			print("Average Price: ", event.avgPrice, type(event.avgPrice))
+			print("Stop Price: ", event.stopPrice, type(event.stopPrice))
+			print("Execution Type: ", event.executionType, type(event.executionType))
+			print("Order Status: ", event.orderStatus, type(event.orderStatus))
+			print("Order Id: ", event.orderId, type(event.orderId))
+			print("Order Last Filled Quantity: ", event.lastFilledQty, type(event.lastFilledQty))
+			print("Order Filled Accumulated Quantity: ", event.cumulativeFilledQty, type(event.cumulativeFilledQty))
+			print("Last Filled Price: ", event.lastFilledPrice, type(event.lastFilledPrice))
+			print("Commission Asset: ", event.commissionAsset, type(event.commissionAsset))
+			print("Commissions: ", event.commissionAmount, type(event.commissionAmount))
+			print("Order Trade Time: ", event.orderTradeTime, type(event.orderTradeTime))
+			print("Trade Id: ", event.tradeID, type(event.tradeID))
+			print("Bids Notional: ", event.bidsNotional, type(event.bidsNotional))
+			print("Ask Notional: ", event.asksNotional, type(event.asksNotional))
+			print("Is this trade the maker side?: ", event.isMarkerSide, type(event.isMarkerSide))
+			print("Is this reduce only: ", event.isReduceOnly, type(event.isReduceOnly))
+			print("stop price working type: ", event.workingType, type(event.workingType))
+			print("Is this Close-All: ", event.isClosePosition, type(event.isClosePosition))
+			print("=========App works========1=====")
 			if not event.activationPrice is None:
 				print("Activation Price for Trailing Stop: ", event.activationPrice)
 			if not event.callbackRate is None:
@@ -252,7 +270,9 @@ def callback(data_type: 'SubscribeMessageType', event: 'any'):
 			if order != None:
 				if processOrderUpdate(order):
 					# store filled order to db
-					q = SignalOrder(orderId=event.orderId, symbol=event.symbol, side=event.side, positionSide=event.positionSide, origQty=event.origQty, avgPrice=event.avgPrice, orderTradeTime=event.orderTradeTime)
+					print("=========App works========2=====")
+
+					q = SignalOrder(orderId=event.orderId, symbol=event.symbol, side=event.side, positionSide=event.positionSide, origQty=int(event.origQty), avgPrice=int(event.avgPrice), orderTradeTime=event.orderTradeTime)
 					db.session.add(q)
 					db.session.commit()
 					flash("Order added")
