@@ -27,7 +27,7 @@ dateparser==1.1.0
 deepdiff==4.0.9
 Flask==1.0.2
 Flask-RESTful==0.3.9
-Flask-SQLAlchemy==cls2.5.1
+Flask-SQLAlchemy==2.5.1
 fqdn==1.5.1
 frozenlist==1.2.0
 gunicorn==20.1.0
