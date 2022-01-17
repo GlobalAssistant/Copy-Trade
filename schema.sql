@@ -34,7 +34,7 @@ CREATE TABLE last_order_event (
 );
 
 DROP TABLE IF EXISTS positionString;
-CREATE TABLE positionString (
+CREATE TABLE PositionString (
 	id integer primary key autoincrement,
 	positionKey string not null,
 	positionString text not null
