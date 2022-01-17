@@ -136,7 +136,7 @@ def processOrderUpdate(order):
 	print("=========App works========5=====")
 
 	# Check whether it is a new postion or exsited position
-	positionKey_positionString = positionString.query.filter_by(positionKey=positionKey).first()
+	positionKey_positionString = PositionString.query.filter_by(positionKey=positionKey).first()
 
 	if positionKey_positionString == None:
 		side = "LONG" if order.side == "BUY" else "SELL"

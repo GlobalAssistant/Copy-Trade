@@ -54,7 +54,7 @@ class LastOrderEvent(db.Model):
 	#	 self.orderKey = orderKey
 	#	 self.lastorderevent = lastorderevent
 
-class positionString(db.Model):
+class PositionString(db.Model):
 	__tablename__ = 'positionString'
 	id = db.Column(db.Integer, primary_key = True)
 	positionKey = db.Column(db.String(255))
