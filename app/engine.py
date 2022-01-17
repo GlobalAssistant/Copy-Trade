@@ -107,31 +107,38 @@ def processOrderUpdate(order):
 	# check eventTime to prevent double processing
 	orderKey = "ORDER-" + positionKey
 	orderKey_lastOrderEvent = LastOrderEvent.query.filter_by(orderKey=orderKey).first()
-	lastOrderEvent = orderKey_lastOrderEvent.lastOrderEvent
-	print("=========App works========3=====")
-	print("=========lastOrderEvent========3=====", lastOrderEvent, type(lastOrderEvent))
+	print("=========lastOrderEvent========03=====", orderKey_lastOrderEvent, type(orderKey_lastOrderEvent))
+	
 
-	# todo UPD: check if no concurrent issues for orders processing
-	if lastOrderEvent >= order.orderTradeTime:
-		print("This order already processed for position", positionKey)
-		return False
+	if orderKey_lastOrderEvent != None:
+		lastOrderEvent = orderKey_lastOrderEvent.lastOrderEvent
+		print("=========App works========003=====")
+		print("=========lastOrderEvent========0003=====", lastOrderEvent, type(lastOrderEvent))
+		# todo UPD: check if no concurrent issues for orders processing
+		if lastOrderEvent >= order.orderTradeTime:
+			print("This order already processed for position", positionKey)
+			return False
+		else:
+			# Instead of Redis
+			q = LastOrderEvent(orderKey=orderKey, lastorderevent=order.orderTradeTime)
+			db.session.add(q)
+			db.session.commit()
+			print("=========App works========4=====")
+
 	else:
-		# Instead of Redis
+		print("=========App works========04=====")
 		q = LastOrderEvent(orderKey=orderKey, lastorderevent=order.orderTradeTime)
 		db.session.add(q)
 		db.session.commit()
-		print("=========App works========4=====")
-
-
-
-	# Check whether it is a new postion or exsited position
-	positionKey_positionString = positionString.query.filter_by(positionKey=positionKey).first()
-	positionString = positionKey_positionString.positionString
+	
 	positionSizePercentage = None
 	positionSize = round(order.origQty * order.avgPrice / binance_futures_leverage, 2)
 	print("=========App works========5=====")
 
-	if positionString == None:
+	# Check whether it is a new postion or exsited position
+	positionKey_positionString = positionString.query.filter_by(positionKey=positionKey).first()
+
+	if positionKey_positionString == None:
 		side = "LONG" if order.side == "BUY" else "SELL"
 		# q = OpenPosition(signalId=unique_random_id, pair=order.symbol, side=side, quantity=order.origQty, maxQuantity=order.origQty, positionSize=positionSize, createDate=createDate, updateDate=datetime.now(timezone.utc), lastEventTime=datetime.now(timezone.utc))
 		position = OpenPosition()
@@ -149,6 +156,7 @@ def processOrderUpdate(order):
 		print("=========App works========6=====")
 
 	else:
+		positionString = positionKey_positionString.positionString
 		position = OpenPosition()
 		position_json = json.loads(positionString)
 		if position_json["isCorrupted"] == True:
@@ -222,6 +230,7 @@ def processOrderUpdate(order):
 
 		# Instead of Redis
 		positionString.query.filter_by(positionKey=positionKey).delete()
+		db.session.commit()
 	else:
 		savePosition(order, position)
 	return True
