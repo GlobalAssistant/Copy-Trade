@@ -106,8 +106,10 @@ def processOrderUpdate(order):
 	positionKey = resolvePositionKey(order)
 	# check eventTime to prevent double processing
 	orderKey = "ORDER-" + positionKey
-	lastOrderEvent = LastOrderEvent.query.filter_by(orderKey=orderKey)
+	orderKey_lastOrderEvent = LastOrderEvent.query.filter_by(orderKey=orderKey).first()
+	lastOrderEvent = orderKey_lastOrderEvent.lastOrderEvent
 	print("=========App works========3=====")
+	print("=========lastOrderEvent========3=====", lastOrderEvent, type(lastOrderEvent))
 
 	# todo UPD: check if no concurrent issues for orders processing
 	if lastOrderEvent >= order.orderTradeTime:
@@ -123,7 +125,8 @@ def processOrderUpdate(order):
 
 
 	# Check whether it is a new postion or exsited position
-	positionString = positionString.query.filter_by(positionKey=positionKey)
+	positionKey_positionString = positionString.query.filter_by(positionKey=positionKey).first()
+	positionString = positionKey_positionString.positionString
 	positionSizePercentage = None
 	positionSize = round(order.origQty * order.avgPrice / binance_futures_leverage, 2)
 	print("=========App works========5=====")
