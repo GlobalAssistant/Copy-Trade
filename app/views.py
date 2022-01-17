@@ -22,6 +22,7 @@ from start import app
 @app.route("/run", methods=['GET'])
 def run_process():
     run()
+    # print("no run")
     return redirect("/", code=302)
 
 
