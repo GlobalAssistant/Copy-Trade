@@ -58,7 +58,7 @@ def sendPost(request, zignaly_keys):
 
 	r = requests.post(zignaly_keys["url"], 
 				data={
-					"pair": request.getPair(),
+					"pair": request.pair,
 					"signalId": request.signalId,
 					"type": request.otype,
 					"exchange": zignaly_keys["exchange_name"],
