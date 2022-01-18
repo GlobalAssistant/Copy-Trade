@@ -222,7 +222,7 @@ def processOrderUpdate(order):
 			position.quantity = position_json["quantity"]
 			print("=========App works========11=====")
 
-	createSignal(position, position.getSide(), order.type, positionSizePercentage)
+	createSignal(position, position.side, order.type, positionSizePercentage)
 	# update position with order
 	if position.isClosed == True:
 		print("Closing postion " + position.pair)
@@ -286,7 +286,7 @@ def callback(data_type: 'SubscribeMessageType', event: 'any'):
 					# store filled order to db
 					print("=========App works========2=====")
 
-					q = SignalOrder(orderId=event.orderId, symbol=event.symbol, side=event.side, positionSide=event.positionSide, origQty=int(event.origQty), avgPrice=int(event.avgPrice), orderTradeTime=event.orderTradeTime)
+					q = SignalOrder(orderId=event.orderId, symbol=event.symbol, side=event.side, positionSide=event.positionSide, origQty=intevent.origQty, avgPrice=event.avgPrice, orderTradeTime=event.orderTradeTime)
 					db.session.add(q)
 					db.session.commit()
 					flash("Order added")
