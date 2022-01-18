@@ -49,7 +49,7 @@ CREATE TABLE CreateSignalRequest (
 	leverage string not null,
 	signalId string not null,
 	pair string not null,
-	otype string not null,
+	type string not null,
 	side string not null,
 	orderType string not null,
 	positionSizePercentage string not null,

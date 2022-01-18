@@ -83,7 +83,7 @@ def createSignal(position, side, otype, positionSizePercentage):
 		request.signalId = position.signalId
 		request.pair = position.pair
 		reduce1 = "World" in otype
-		request.otype = "update" if reduce1 else otype
+		request.type = "update" if reduce1 else otype
 		request.side = side
 		request.orderType = "MARKET"
 
@@ -95,7 +95,7 @@ def createSignal(position, side, otype, positionSizePercentage):
 
 		# zignalyService.createSignal(request)
 		request.key = zignaly_keys["api_key"]
-		request.exchange = "binance"
+		request.exchange = "zignaly"
 		request.exchangeAccountType = "futures"
 		request.stopLossFollowsTakeProfit = "True"
 

@@ -47,7 +47,7 @@ class CreateSignalRequest:
 	leverage = db.Column(db.String(255))
 	signalId = db.Column(db.String(255))
 	pair = db.Column(db.String(255))
-	otype = db.Column(db.String(255))
+	type = db.Column(db.String(255))
 	side = db.Column(db.String(255))
 	orderType = db.Column(db.String(255))
 	positionSizePercentage = db.Column(db.String(255))
