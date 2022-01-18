@@ -9,6 +9,7 @@ from binance_f.model import *
 from binance_f.exception.binanceapiexception import BinanceApiException
 from binance_f.base.printobject import *
 import json
+from dateutil import parser
 
 from models import *
 from start import app, db
@@ -65,8 +66,8 @@ def savePosition(order, position):
 		position_dict["quantity"] = position.quantity
 		position_dict["maxQuantity"] = position.maxQuantity
 		position_dict["positionSize"] = position.positionSize
-		position_dict["createDate"] = position.createDate
-		position_dict["updateDate"] = position.updateDate
+		position_dict["createDate"] = str(position.createDate)
+		position_dict["updateDate"] = str(position.updateDate)
 		position_dict["lastEventTime"] = position.lastEventTime
 		position_dict["isClosed"] = position.isClosed
 		position_dict["isCorrupted"] = position.isCorrupted
@@ -219,8 +220,8 @@ def processOrderUpdate(order):
 					position.quantity=position_json["quantity"]
 					position.maxQuantity=position_json["maxQuantity"]
 					position.positionSize=position_json["positionSize"]
-					position.createDate=position_json["createDate"]
-					position.updateDate=position_json["updateDate"]
+					position.createDate=parser.parse(position_json["createDate"])
+					position.updateDate=parser.parse(position_json["updateDate"])
 					position.lastEventTime=position_json["lastEventTime"]
 
 					savePosition(order, position)
@@ -309,7 +310,6 @@ def callback(data_type: 'SubscribeMessageType', event: 'any'):
 					q = SignalOrder(orderId=event.orderId, symbol=event.symbol, side=event.side, positionSide=event.positionSide, origQty=int(event.origQty), avgPrice=event.avgPrice, orderTradeTime=event.orderTradeTime)
 					db.session.add(q)
 					db.session.commit()
-					flash("Order added")
 
 		elif(event.eventType == "listenKeyExpired"):
 			print("Event: ", event.eventType)
