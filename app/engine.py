@@ -26,7 +26,7 @@ def resolvePositionKey(order):
 
 def sendPost(request, zignaly_keys):
 	try:
-		print("=========send post function=============")
+		print("=========request=============", request, type(request))
 
 		print(json.dumps(request.__dict__))
 		print("=========ready to send=============")
@@ -57,8 +57,11 @@ def sendPost(request, zignaly_keys):
 def savePosition(order, position):
 	try:
 		position.updateDate = datetime.now(timezone.utc)
+		print("=======position==========", position, type(position))
 		position_json = json.dumps(position.__dict__)
+		print("=======position_json==========", position_json)
 		position_str = str(position_json)
+		print("==========position_str=======", position_str)
 		q = positionString(positionKey=resolvePositionKey(order), positionString=position_str)
 		db.session.add(q)
 		db.session.commit()
