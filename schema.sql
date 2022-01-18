@@ -46,15 +46,15 @@ CREATE TABLE CreateSignalRequest (
 	key string not null,
 	exchange string not null,
 	exchangeAccountType string not null,
-	leverage integer not null,
+	leverage string not null,
 	signalId string not null,
 	pair string not null,
 	otype string not null,
 	side string not null,
 	orderType string not null,
-	positionSizePercentage integer not null,
+	positionSizePercentage string not null,
 	reduceOrderType string not null,
-	reduceAvailablePercentage integer not null,
+	reduceAvailablePercentage string not null,
 	limitPrice string not null,
 	stopLossFollowsTakeProfit string not null
 );
