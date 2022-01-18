@@ -27,6 +27,7 @@ def resolvePositionKey(order):
 
 def sendPost(request, zignaly_keys):
 	try:
+		print("========This request will be sent to zignaly==========")
 		print(json.dumps(request.__dict__))
 		r = requests.post(zignaly_keys["url"], 
 				data = json.dumps(request.__dict__)

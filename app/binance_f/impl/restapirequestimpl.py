@@ -86,7 +86,7 @@ class RestApiRequestImpl(object):
         # For develop
         # print("====== Request ======")
         # print(request)
-        PrintMix.print_data(request)
+        # PrintMix.print_data(request)
         # print("=====================")
         return request
 
