@@ -12,5 +12,5 @@
       "url": "https://zignaly.com/api/signals.php",
       "exchange_name": "zignaly"
       },
-  "leverage":10
+  "leverage":"10"
 }

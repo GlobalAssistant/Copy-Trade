@@ -68,7 +68,7 @@ def sendPost(request, zignaly_keys):
 					"leverage": binance_futures_leverage,
 					"positionSizePercentage": "1",
 					"key": zignaly_keys["api_key"],
-					"stopLossFollowsTakeProfit":True
+					"stopLossFollowsTakeProfit":"True"
 				}
 		)
 
@@ -87,7 +87,7 @@ def createSignal(position, side, otype, positionSizePercentage):
 	request.pair = position.pair
 	reduce1 = "World" in otype
 	request.otype = "update" if reduce1 else otype
-	request.side = side;
+	request.side = side
 	request.orderType = "MARKET"
 	print("=========App works========12=====")
 
@@ -125,11 +125,11 @@ def processOrderUpdate(order):
 	
 
 	if orderKey_lastOrderEvent != None:
-		lastOrderEvent = orderKey_lastOrderEvent.lastOrderEvent
+		lastorderevent = orderKey_lastOrderEvent.lastorderevent
 		print("=========App works========003=====")
-		print("=========lastOrderEvent========0003=====", lastOrderEvent, type(lastOrderEvent))
+		print("=========lastOrderEvent========0003=====", lastorderevent, type(lastorderevent))
 		# todo UPD: check if no concurrent issues for orders processing
-		if lastOrderEvent >= order.orderTradeTime:
+		if lastorderevent >= order.orderTradeTime:
 			print("This order already processed for position", positionKey)
 			return False
 		else:
@@ -153,9 +153,9 @@ def processOrderUpdate(order):
 	positionKey_positionString = PositionString.query.filter_by(positionKey=positionKey).first()
 
 	if positionKey_positionString == None:
-		side = "LONG" if order.side == "BUY" else "SELL"
 		# q = OpenPosition(signalId=unique_random_id, pair=order.symbol, side=side, quantity=order.origQty, maxQuantity=order.origQty, positionSize=positionSize, createDate=createDate, updateDate=datetime.now(timezone.utc), lastEventTime=datetime.now(timezone.utc))
 		position = OpenPosition()
+		position.side = "LONG" if order.side == "BUY" else "SELL"
 		unique_random_id = str(int(round(time.time() * 1000)))
 		position.signalId=unique_random_id
 		position.pair=order.symbol
@@ -211,6 +211,7 @@ def processOrderUpdate(order):
 				position.isCorrupted = position_json["isCorrupted"]
 
 				position.signalId=position_json["signalId"]
+				position.side=position_json["side"]
 				position.pair=position_json["pair"]
 				position.quantity=position_json["quantity"]
 				position.maxQuantity=position_json["maxQuantity"]
@@ -236,7 +237,7 @@ def processOrderUpdate(order):
 			position.quantity = position_json["quantity"]
 			print("=========App works========11=====")
 
-	createSignal(position, position.side, order.type, positionSizePercentage)
+	createSignal(position, position.side, otype, positionSizePercentage)
 	# update position with order
 	if position.isClosed == True:
 		print("Closing postion " + position.pair)
