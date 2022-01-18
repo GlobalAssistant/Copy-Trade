@@ -272,14 +272,14 @@ def callback(data_type: 'SubscribeMessageType', event: 'any'):
 			print("Is this reduce only: ", event.isReduceOnly, type(event.isReduceOnly))
 			print("stop price working type: ", event.workingType, type(event.workingType))
 			print("Is this Close-All: ", event.isClosePosition, type(event.isClosePosition))
-			print("RealizedProfit: ", event.realizedProfit, type(event.realizedProfit))
+			# print("RealizedProfit: ", event.realizedProfit, type(event.realizedProfit))
 			print("=========App works========1=====")
 			if not event.activationPrice is None:
 				print("Activation Price for Trailing Stop: ", event.activationPrice)
 			if not event.callbackRate is None:
 				print("Callback Rate for Trailing Stop: ", event.callbackRate)
 
-			order = OrderUpdate
+			order = OrderUpdate()
 			order = event
 			if order != None:
 				if processOrderUpdate(order):
