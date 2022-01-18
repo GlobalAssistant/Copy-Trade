@@ -1,8 +1,7 @@
 from binance_f.constant.system import RestApiDefine
 from binance_f.impl.restapirequestimpl import RestApiRequestImpl
-from binance_f.impl.restapiinvoker import call_sync
+from binance_f.impl.restapiinvoker import call_sync, call_sync_account_info_v2
 from binance_f.model.constant import *
-
 
 class RequestClient(object):
 
