@@ -57,11 +57,21 @@ def sendPost(request, zignaly_keys):
 def savePosition(order, position):
 	try:
 		position.updateDate = datetime.now(timezone.utc)
-		print("=======position==========", position, type(position))
-		position_json = json.dumps(position.__dict__)
-		print("=======position_json==========", position_json)
-		position_str = str(position_json)
-		print("==========position_str=======", position_str)
+
+		position_dict = {}
+		position_dict["signalId"] = position.signalId
+		position_dict["pair"] = position.pair
+		position_dict["side"] = position.side
+		position_dict["quantity"] = position.quantity
+		position_dict["maxQuantity"] = position.maxQuantity
+		position_dict["positionSize"] = position.positionSize
+		position_dict["createDate"] = position.createDate
+		position_dict["updateDate"] = position.updateDate
+		position_dict["lastEventTime"] = position.lastEventTime
+		position_dict["isClosed"] = position.isClosed
+		position_dict["isCorrupted"] = position.isCorrupted
+
+		position_str = json.dumps(position_dict)
 		q = positionString(positionKey=resolvePositionKey(order), positionString=position_str)
 		db.session.add(q)
 		db.session.commit()
@@ -296,7 +306,7 @@ def callback(data_type: 'SubscribeMessageType', event: 'any'):
 					# store filled order to db
 					print("=========App works========2=====")
 
-					q = SignalOrder(orderId=event.orderId, symbol=event.symbol, side=event.side, positionSide=event.positionSide, origQty=intevent.origQty, avgPrice=event.avgPrice, orderTradeTime=event.orderTradeTime)
+					q = SignalOrder(orderId=event.orderId, symbol=event.symbol, side=event.side, positionSide=event.positionSide, origQty=int(event.origQty), avgPrice=event.avgPrice, orderTradeTime=event.orderTradeTime)
 					db.session.add(q)
 					db.session.commit()
 					flash("Order added")
