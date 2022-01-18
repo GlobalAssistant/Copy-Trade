@@ -163,6 +163,7 @@ def processOrderUpdate(order):
 			positionSizePercentage = round(positionSize * 100 / walletBalance, 2)
 
 		else:
+			# todo create take profit order for 25% of position
 			positionString = positionKey_positionString.positionString
 			position = OpenPosition()
 			position_json = json.loads(positionString)
