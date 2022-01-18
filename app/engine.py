@@ -27,20 +27,34 @@ def resolvePositionKey(order):
 def sendPost(request, zignaly_keys):
 
 	# r = requests.post(zignaly_keys["url"], 
-	#			 data={
-	#				 "pair": request.getPair(),
-	#				 "signalId": request.getSignalId(),
-	#				 "type": request.getOtype(),
-	#				 "exchange": request.getExchange(),
-	#				 "exchangeAccountType": request.getExchangeAccountType(),
-	#				 "side": getSide(),
-	#				 "orderType":  request.getOrderType(),
-	#				 "leverage": "10",
-	#				 "positionSizePercentage": getPositionSizePercentage(),
-	#				 "key": request.getKey(),
-	#				 "stopLossFollowsTakeProfit":True
-	#			 }
-	#	 )
+	# 			 data={
+	# 				 "pair": request.pair,
+	# 				 "signalId": request.signalId,
+	# 				 "type": request.otype,
+	# 				 "exchange": request.exchange,
+	# 				 "exchangeAccountType": request.exchangeAccountType,
+	# 				 "side": side,
+	# 				 "orderType":  request.orderType,
+	# 				 "leverage": "10",
+	# 				 "positionSizePercentage": positionSizePercentage,
+	# 				 "key": request.key,
+	# 				 "stopLossFollowsTakeProfit":True
+	# 			 }
+	# 	 )
+	data={
+			"pair": request.pair,
+			"signalId": request.signalId,
+			"type": request.otype,
+			"exchange": request.exchange,
+			"exchangeAccountType": request.exchangeAccountType,
+			"side": side,
+			"orderType":  request.orderType,
+			"leverage": "10",
+			"positionSizePercentage": positionSizePercentage,
+			"key": request.key,
+			"stopLossFollowsTakeProfit":True
+		}
+	print("=========request data====", data)
 
 	r = requests.post(zignaly_keys["url"], 
 				data={
@@ -68,25 +82,25 @@ def savePosition(order, position):
 
 def createSignal(position, side, otype, positionSizePercentage):
 	request = CreateSignalRequest()
-	request.setLeverage(binance_futures_leverage)
-	request.setSignalId(position.getSignalId())
-	request.setPair(position.getPair())
+	request.leverage = binance_futures_leverage
+	request.signalId = position.signalId
+	request.pair = position.pair
 	reduce1 = "World" in otype
-	request.setOtype("update" if reduce1 else otype)
-	request.setSide(side);
-	request.setOrderType("MARKET")
+	request.otype = "update" if reduce1 else otype
+	request.side = side;
+	request.orderType = "MARKET"
 	print("=========App works========12=====")
 
 	if reduce1:
-		request.setReduceOrderType("MARKET");
-		request.setReduceAvailablePercentage(positionSizePercentage)
+		request.reduceOrderType = "MARKET";
+		request.reduceAvailablePercentage = positionSizePercentage
 	elif positionSizePercentage != None:
-		request.setPositionSizePercentage(positionSizePercentage)
+		request.positionSizePercentage = positionSizePercentage
 
 	# zignalyService.createSignal(request)
-	request.setKey(zignaly_keys["api_key"])
-	request.setExchange("binance")
-	request.setExchangeAccountType("futures")
+	request.key = (zignaly_keys["api_key"])
+	request.exchange = "binance"
+	request.exchangeAccountType = "futures"
 
 	db.session.add(request)
 	db.session.commit()
