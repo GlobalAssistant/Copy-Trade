@@ -35,7 +35,7 @@ def sendPost(request, zignaly_keys):
 	# 				 "exchangeAccountType": request.exchangeAccountType,
 	# 				 "side": request.side,
 	# 				 "orderType":  request.orderType,
-	# 				 "leverage": binance_futures_leverage,
+	# 				 "leverage": request.leverage,
 	# 				 "positionSizePercentage": request.positionSizePercentage,
 	# 				 "key": request.key,
 	# 				 "stopLossFollowsTakeProfit":True
@@ -49,7 +49,7 @@ def sendPost(request, zignaly_keys):
 			"exchangeAccountType": request.exchangeAccountType,
 			"side": request.side,
 			"orderType":  request.orderType,
-			"leverage": binance_futures_leverage,
+			"leverage": request.leverage,
 			"positionSizePercentage": request.positionSizePercentage,
 			"key": request.key,
 			"stopLossFollowsTakeProfit":True
@@ -59,13 +59,13 @@ def sendPost(request, zignaly_keys):
 	r = requests.post(zignaly_keys["url"], 
 				data={
 					"pair": request.pair,
-					"signalId": request.signalId,
+					"signalId": str(request.signalId),
 					"type": request.otype,
 					"exchange": zignaly_keys["exchange_name"],
 					"exchangeAccountType": request.exchangeAccountType,
 					"side": request.side,
 					"orderType": request.orderType,
-					"leverage": binance_futures_leverage,
+					"leverage": str(request.leverage),
 					"positionSizePercentage": "1",
 					"key": zignaly_keys["api_key"],
 					"stopLossFollowsTakeProfit":"True"
