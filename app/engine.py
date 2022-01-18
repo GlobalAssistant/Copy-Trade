@@ -58,16 +58,16 @@ def sendPost(request, zignaly_keys):
 
 	r = requests.post(zignaly_keys["url"], 
 				data={
-					"pair": request.pair,
+					"pair": str(request.pair),
 					"signalId": str(request.signalId),
-					"type": request.otype,
+					"type": str(request.otype),
 					"exchange": zignaly_keys["exchange_name"],
-					"exchangeAccountType": request.exchangeAccountType,
-					"side": request.side,
-					"orderType": request.orderType,
+					"exchangeAccountType": str(request.exchangeAccountType),
+					"side": str(request.side),
+					"orderType": str(request.orderType),
 					"leverage": str(request.leverage),
 					"positionSizePercentage": "1",
-					"key": zignaly_keys["api_key"],
+					"key": str(request.key),
 					"stopLossFollowsTakeProfit":"True"
 				}
 		)
