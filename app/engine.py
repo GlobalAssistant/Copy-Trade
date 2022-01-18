@@ -148,9 +148,9 @@ def processOrderUpdate(order):
 		position.quantity=order.origQty
 		position.maxQuantity=order.origQty
 		position.positionSize=positionSize
-		position.createDate=createDate
+		position.createDate=datetime.now(timezone.utc)
 		position.updateDate=datetime.now(timezone.utc)
-		position.lastEventTime=datetime.now(timezone.utc)
+		position.lastEventTime=order.orderTradeTime
 
 		otype = "entry"
 		positionSizePercentage = round(positionSize * 100 / walletBalance, 2)
@@ -272,6 +272,7 @@ def callback(data_type: 'SubscribeMessageType', event: 'any'):
 			print("Is this reduce only: ", event.isReduceOnly, type(event.isReduceOnly))
 			print("stop price working type: ", event.workingType, type(event.workingType))
 			print("Is this Close-All: ", event.isClosePosition, type(event.isClosePosition))
+			print("RealizedProfit: ", event.realizedProfit, type(event.realizedProfit))
 			print("=========App works========1=====")
 			if not event.activationPrice is None:
 				print("Activation Price for Trailing Stop: ", event.activationPrice)
