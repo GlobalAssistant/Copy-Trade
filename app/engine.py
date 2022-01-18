@@ -27,11 +27,7 @@ def resolvePositionKey(order):
 
 def sendPost(request, zignaly_keys):
 	try:
-		print("=========request=============", request, type(request))
-
 		print(json.dumps(request.__dict__))
-		print("=========ready to send=============")
-
 		r = requests.post(zignaly_keys["url"], 
 				data = json.dumps(request.__dict__)
 			 )
@@ -89,7 +85,6 @@ def createSignal(position, side, otype, positionSizePercentage):
 		request.otype = "update" if reduce1 else otype
 		request.side = side
 		request.orderType = "MARKET"
-		print("=========App works========12=====")
 
 		if reduce1:
 			request.reduceOrderType = "MARKET";
@@ -103,7 +98,6 @@ def createSignal(position, side, otype, positionSizePercentage):
 		request.exchangeAccountType = "futures"
 		request.stopLossFollowsTakeProfit = "True"
 
-		print("=========App works========13=====")
 	except Exception as e:
 		print("====Error in createSignal function==========", e)
 
@@ -125,13 +119,9 @@ def processOrderUpdate(order):
 		# check eventTime to prevent double processing
 		orderKey = "ORDER-" + positionKey
 		orderKey_lastOrderEvent = LastOrderEvent.query.filter_by(orderKey=orderKey).first()
-		print("=========lastOrderEvent========03=====", orderKey_lastOrderEvent, type(orderKey_lastOrderEvent))
-		
 
 		if orderKey_lastOrderEvent != None:
 			lastorderevent = orderKey_lastOrderEvent.lastorderevent
-			print("=========App works========003=====")
-			print("=========lastOrderEvent========0003=====", lastorderevent, type(lastorderevent))
 			# todo UPD: check if no concurrent issues for orders processing
 			if lastorderevent >= order.orderTradeTime:
 				print("This order already processed for position", positionKey)
@@ -141,17 +131,14 @@ def processOrderUpdate(order):
 				q = LastOrderEvent(orderKey=orderKey, lastorderevent=order.orderTradeTime)
 				db.session.add(q)
 				db.session.commit()
-				print("=========App works========4=====")
 
 		else:
-			print("=========App works========04=====")
 			q = LastOrderEvent(orderKey=orderKey, lastorderevent=order.orderTradeTime)
 			db.session.add(q)
 			db.session.commit()
 		
 		positionSizePercentage = None
 		positionSize = round(order.origQty * order.avgPrice / binance_futures_leverage, 2)
-		print("=========App works========5=====")
 
 		# Check whether it is a new postion or exsited position
 		positionKey_positionString = PositionString.query.filter_by(positionKey=positionKey).first()
@@ -172,7 +159,6 @@ def processOrderUpdate(order):
 
 			otype = "entry"
 			positionSizePercentage = round(positionSize * 100 / walletBalance, 2)
-			print("=========App works========6=====")
 
 		else:
 			positionString = positionKey_positionString.positionString
@@ -188,7 +174,6 @@ def processOrderUpdate(order):
 				return True
 
 			increase = order.side == "BUY" if position_json["side"] == "LONG" else order.side == "SELL"
-			print("=========App works========7=====")
 
 			if increase :
 				# todo: if position was not reduced yet - recreate take profit
@@ -202,7 +187,6 @@ def processOrderUpdate(order):
 				positionSizePercentage = round(positionSize * 100 / walletBalance, 2)
 				position_json["positionSize"] = position_json["positionSize"] + positionSize
 				position.positionSize = position_json["positionSize"]
-				print("=========App works========8=====")
 
 			else:
 				if position_json["quantity"] == position_json["maxQuantity"]:
@@ -225,11 +209,9 @@ def processOrderUpdate(order):
 					position.lastEventTime=position_json["lastEventTime"]
 
 					savePosition(order, position)
-					print("=========App works========9=====")
 
 					return True
 				else:
-					print("=========App works========10=====")
 
 					otype = "update_reduce"
 					positionSizePercentage = round(positionSize * 100 / walletBalance, 2)
@@ -239,7 +221,6 @@ def processOrderUpdate(order):
 				# walletBalance = walletBalance = order.realizedProfit()
 				position_json["quantity"] = result
 				position.quantity = position_json["quantity"]
-				print("=========App works========11=====")
 
 		createSignal(position, position.side, otype, positionSizePercentage)
 		# update position with order
@@ -294,7 +275,6 @@ def callback(data_type: 'SubscribeMessageType', event: 'any'):
 			print("stop price working type: ", event.workingType, type(event.workingType))
 			print("Is this Close-All: ", event.isClosePosition, type(event.isClosePosition))
 			# print("RealizedProfit: ", event.realizedProfit, type(event.realizedProfit))
-			print("=========App works========1=====")
 			if not event.activationPrice is None:
 				print("Activation Price for Trailing Stop: ", event.activationPrice)
 			if not event.callbackRate is None:
@@ -305,8 +285,6 @@ def callback(data_type: 'SubscribeMessageType', event: 'any'):
 			if order != None:
 				if processOrderUpdate(order):
 					# store filled order to db
-					print("=========App works========2=====")
-
 					q = SignalOrder(orderId=event.orderId, symbol=event.symbol, side=event.side, positionSide=event.positionSide, origQty=int(event.origQty), avgPrice=event.avgPrice, orderTradeTime=event.orderTradeTime)
 					db.session.add(q)
 					db.session.commit()
