@@ -562,7 +562,7 @@ class RequestClient(object):
 
         Get current account information.
         """
-        response = call_sync(self.request_impl.get_account_information_v2())
+        response = call_sync_account_info_v2(self.request_impl.get_account_information_v2())
         self.refresh_limits(response[1])
         return response[0]
 

@@ -50,10 +50,10 @@ class RestApiRequestImpl(object):
         request.post_body = builder.post_map
         request.url = url + "?" + builder.build_url()
         # For develop
-        # print("====== Request ======")
-        # print(request)
-        # PrintMix.print_data(request)
-        # print("=====================")
+        print("====== Request ======")
+        print(request)
+        PrintMix.print_data(request)
+        print("=====================")
         return request
 
     def __create_request_by_delete_with_signature(self, url, builder):
