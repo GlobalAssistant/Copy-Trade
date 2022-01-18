@@ -65,7 +65,7 @@ def sendPost(request, zignaly_keys):
 					"exchangeAccountType": request.exchangeAccountType,
 					"side": request.side,
 					"orderType": request.orderType,
-					"leverage": request.binance_futures_leverage,
+					"leverage": binance_futures_leverage,
 					"positionSizePercentage": "1",
 					"key": zignaly_keys["api_key"],
 					"stopLossFollowsTakeProfit":True
