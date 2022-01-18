@@ -98,7 +98,7 @@ def createSignal(position, side, otype, positionSizePercentage):
 		request.positionSizePercentage = positionSizePercentage
 
 	# zignalyService.createSignal(request)
-	request.key = (zignaly_keys["api_key"])
+	request.key = zignaly_keys["api_key"]
 	request.exchange = "binance"
 	request.exchangeAccountType = "futures"
 
