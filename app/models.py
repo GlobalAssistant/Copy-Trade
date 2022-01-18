@@ -80,6 +80,7 @@ class CreateSignalRequest:
 	reduceOrderType = db.Column(db.String(255))
 	reduceAvailablePercentage = db.Column(db.Integer)
 	limitPrice = db.Column(db.String(255))
+	stopLossFollowsTakeProfit = db.Column(db.Boolean, default=False)
 
 
 	# def __init__(self):

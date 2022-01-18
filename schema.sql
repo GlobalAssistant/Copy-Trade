@@ -55,7 +55,8 @@ CREATE TABLE CreateSignalRequest (
 	positionSizePercentage integer not null,
 	reduceOrderType string not null,
 	reduceAvailablePercentage integer not null,
-	limitPrice string not null
+	limitPrice string not null,
+	stopLossFollowsTakeProfit string not null
 );
 
 

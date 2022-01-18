@@ -26,51 +26,26 @@ def resolvePositionKey(order):
 
 def sendPost(request, zignaly_keys):
 
-	# r = requests.post(zignaly_keys["url"], 
-	# 			 data={
-	# 				 "pair": request.pair,
-	# 				 "signalId": request.signalId,
-	# 				 "type": request.otype,
-	# 				 "exchange": zignaly_keys["exchange_name"],
-	# 				 "exchangeAccountType": request.exchangeAccountType,
-	# 				 "side": request.side,
-	# 				 "orderType":  request.orderType,
-	# 				 "leverage": request.leverage,
-	# 				 "positionSizePercentage": request.positionSizePercentage,
-	# 				 "key": request.key,
-	# 				 "stopLossFollowsTakeProfit":True
-	# 			 }
-	# 	 )
-	data={
-			"pair": request.pair,
-			"signalId": request.signalId,
-			"type": request.otype,
-			"exchange": zignaly_keys["exchange_name"],
-			"exchangeAccountType": request.exchangeAccountType,
-			"side": request.side,
-			"orderType":  request.orderType,
-			"leverage": request.leverage,
-			"positionSizePercentage": request.positionSizePercentage,
-			"key": request.key,
-			"stopLossFollowsTakeProfit":True
-		}
-	print("=========request data====", data)
-
+	print(json.dumps(request.__dict__))
 	r = requests.post(zignaly_keys["url"], 
-				data={
-					"pair": str(request.pair),
-					"signalId": str(request.signalId),
-					"type": str(request.otype),
-					"exchange": zignaly_keys["exchange_name"],
-					"exchangeAccountType": str(request.exchangeAccountType),
-					"side": str(request.side),
-					"orderType": str(request.orderType),
-					"leverage": str(request.leverage),
-					"positionSizePercentage": "1",
-					"key": str(request.key),
-					"stopLossFollowsTakeProfit":"True"
-				}
-		)
+			data = json.dumps(request.__dict__)
+		 )
+
+	# r = requests.post(zignaly_keys["url"], 
+	# 		data={
+	# 			"pair": str(request.pair),
+	# 			"signalId": str(request.signalId),
+	# 			"type": str(request.otype),
+	# 			"exchange": zignaly_keys["exchange_name"],
+	# 			"exchangeAccountType": str(request.exchangeAccountType),
+	# 			"side": str(request.side),
+	# 			"orderType": str(request.orderType),
+	# 			"leverage": str(request.leverage),
+	# 			"positionSizePercentage": str(request.leverage),
+	# 			"key": str(request.key),
+	# 			"stopLossFollowsTakeProfit":"True"
+	# 		}
+	# 	)
 
 def savePosition(order, position):
 	position.updateDate = datetime.now(timezone.utc)
@@ -101,9 +76,8 @@ def createSignal(position, side, otype, positionSizePercentage):
 	request.key = zignaly_keys["api_key"]
 	request.exchange = "binance"
 	request.exchangeAccountType = "futures"
+	request.stopLossFollowsTakeProfit = "True"
 
-	# db.session.add(request)
-	# db.session.commit()
 	print("=========App works========13=====")
 
 
