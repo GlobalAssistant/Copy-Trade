@@ -73,7 +73,7 @@ def savePosition(order, position):
 		position_dict["isCorrupted"] = position.isCorrupted
 
 		position_str = json.dumps(position_dict)
-		q = positionString(positionKey=resolvePositionKey(order), positionString=position_str)
+		q = PositionString(positionKey=resolvePositionKey(order), positionString=position_str)
 		db.session.add(q)
 		db.session.commit()
 	except Exception as e:
