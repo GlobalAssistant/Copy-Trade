@@ -45,11 +45,11 @@ def sendPost(request, zignaly_keys):
 			"pair": request.pair,
 			"signalId": request.signalId,
 			"type": request.otype,
-			"exchange": request.exchange,
+			"exchange": zignaly_keys["exchange_name"],
 			"exchangeAccountType": request.exchangeAccountType,
 			"side": side,
 			"orderType":  request.orderType,
-			"leverage": "10",
+			"leverage": binance_futures_leverage,
 			"positionSizePercentage": positionSizePercentage,
 			"key": request.key,
 			"stopLossFollowsTakeProfit":True
@@ -59,13 +59,13 @@ def sendPost(request, zignaly_keys):
 	r = requests.post(zignaly_keys["url"], 
 				data={
 					"pair": request.getPair(),
-					"signalId": "long1id",
-					"type": "entry",
-					"exchange": "zignaly",
-					"exchangeAccountType": "futures",
-					"side": "long",
-					"orderType": "market",
-					"leverage": "10",
+					"signalId": request.signalId,
+					"type": request.otype,
+					"exchange": zignaly_keys["exchange_name"],
+					"exchangeAccountType": request.exchangeAccountType,
+					"side": side,
+					"orderType": request.orderType,
+					"leverage": binance_futures_leverage,
 					"positionSizePercentage": "1",
 					"key": zignaly_keys["api_key"],
 					"stopLossFollowsTakeProfit":True
@@ -102,8 +102,8 @@ def createSignal(position, side, otype, positionSizePercentage):
 	request.exchange = "binance"
 	request.exchangeAccountType = "futures"
 
-	db.session.add(request)
-	db.session.commit()
+	# db.session.add(request)
+	# db.session.commit()
 	print("=========App works========13=====")
 
 
