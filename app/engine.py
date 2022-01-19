@@ -29,30 +29,16 @@ def sendPost(request, zignaly_keys):
 	try:
 		position_str = json.dumps(request.__dict__)
 		position_json = json.loads(position_str)
-		
+
 		print("========This request will be sent to :", zignaly_keys["url"])
 		print(position_json, type(position_json))
 		r = requests.post(zignaly_keys["url"], 
 				data = position_json
 			 )
-		print("===Response :===", r)
 		print("=========Sent to zignaly successfully=============")
+		print("===Response :===", r)
+		
 
-		# r = requests.post(zignaly_keys["url"], 
-		# 		data={
-		# 			"pair": str(request.pair),
-		# 			"signalId": str(request.signalId),
-		# 			"type": str(request.otype),
-		# 			"exchange": zignaly_keys["exchange_name"],
-		# 			"exchangeAccountType": str(request.exchangeAccountType),
-		# 			"side": str(request.side),
-		# 			"orderType": str(request.orderType),
-		# 			"leverage": str(request.leverage),
-		# 			"positionSizePercentage": str(request.leverage),
-		# 			"key": str(request.key),
-		# 			"stopLossFollowsTakeProfit":"True"
-		# 		}
-		# 	)
 	except Exception as e:
 		print("====Error in sendPost function==========", e)
 
@@ -120,14 +106,16 @@ def processOrderUpdate(order):
 			print("Order is not FILLED")
 			return False
 
-		positionKey = resolvePositionKey(order)
-		# check eventTime to prevent double processing
-		orderKey = "ORDER-" + positionKey
+		positionKey = resolvePositionKey(order)  # LONG-TRXUSDT
+		
+		orderKey = "ORDER-" + positionKey  # ORDER-LONG-TRXUSDT
+
+		# Check if this order is in last order list of DB by order key
 		orderKey_lastOrderEvent = LastOrderEvent.query.filter_by(orderKey=orderKey).first()
 
 		if orderKey_lastOrderEvent != None:
 			lastorderevent = orderKey_lastOrderEvent.lastorderevent
-			# todo UPD: check if no concurrent issues for orders processing
+			# check eventTime to prevent double processing
 			if lastorderevent >= order.orderTradeTime:
 				print("This order already processed for position", positionKey)
 				return False
@@ -149,7 +137,6 @@ def processOrderUpdate(order):
 		positionKey_positionString = PositionString.query.filter_by(positionKey=positionKey).first()
 
 		if positionKey_positionString == None:
-			# q = OpenPosition(signalId=unique_random_id, pair=order.symbol, side=side, quantity=order.origQty, maxQuantity=order.origQty, positionSize=positionSize, createDate=createDate, updateDate=datetime.now(timezone.utc), lastEventTime=datetime.now(timezone.utc))
 			position = OpenPosition()
 			position.side = "LONG" if order.side == "BUY" else "SHORT"
 			unique_random_id = str(int(round(time.time() * 1000)))
@@ -162,11 +149,11 @@ def processOrderUpdate(order):
 			position.updateDate=datetime.now(timezone.utc)
 			position.lastEventTime=order.orderTradeTime
 
-			otype = "entry"
+			otype = "entry" # Type of signal
 			positionSizePercentage = round(positionSize * 100 / walletBalance, 2)
 
 		else:
-			# todo create take profit order for 25% of position
+			# todo create take profit order for position
 			positionString = positionKey_positionString.positionString
 			position = OpenPosition()
 			position_json = json.loads(positionString)
@@ -213,18 +200,20 @@ def processOrderUpdate(order):
 					position.createDate=parser.parse(position_json["createDate"])
 					position.updateDate=parser.parse(position_json["updateDate"])
 					position.lastEventTime=position_json["lastEventTime"]
+					position.isClosed=position_json["isClosed"]
 
 					savePosition(order, position)
-
 					return True
+				elif double(result) == 0:
+					 position_json["isClosed"] = True
+					 position.isClosed=position_json["isClosed"]
+					 otype = "exit"
 				else:
-
 					otype = "update_reduce"
 					positionSizePercentage = round(positionSize * 100 / walletBalance, 2)
 					position_json["positionSize"] = position_json["positionSize"] - positionSize
 					position.positionSize = position_json["positionSize"]
 
-				# walletBalance = walletBalance = order.realizedProfit()
 				position_json["quantity"] = result
 				position.quantity = position_json["quantity"]
 
@@ -310,7 +299,7 @@ def error(e: 'BinanceApiException'):
 
 def run():
 	try:
-		# Start user data stream
+		# Start a new user data stream. The stream will close after 60 minutes unless a keepalive is sent. If the account has an active listenKey, that listenKey will be returned and its validity will be extended for 60 minutes.
 		request_client = RequestClient(api_key=keys["api_key"], secret_key=keys["secret_key"])
 		listen_key = request_client.start_user_data_stream()
 
@@ -324,9 +313,10 @@ def run():
 				if walletBalance == 0:
 					print("Wallet balance is 0")
 
-		# Keep user data stream
+		# Keepalive a user data stream to prevent a time out.
 		result = request_client.keep_user_data_stream()
-		# print("Result: ", result)
+
+		# Create the subscription client to subscribe the update from server.
 		client = SubscriptionClient(api_key=keys["api_key"], secret_key=keys["secret_key"])
 	except Exception as e:
 		print("====Error in run function==========", e)
