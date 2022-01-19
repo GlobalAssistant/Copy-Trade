@@ -148,7 +148,7 @@ def processOrderUpdate(order):
 		if positionKey_positionString == None:
 			# q = OpenPosition(signalId=unique_random_id, pair=order.symbol, side=side, quantity=order.origQty, maxQuantity=order.origQty, positionSize=positionSize, createDate=createDate, updateDate=datetime.now(timezone.utc), lastEventTime=datetime.now(timezone.utc))
 			position = OpenPosition()
-			position.side = "LONG" if order.side == "BUY" else "SELL"
+			position.side = "LONG" if order.side == "BUY" else "SHORT"
 			unique_random_id = str(int(round(time.time() * 1000)))
 			position.signalId=unique_random_id
 			position.pair=order.symbol
