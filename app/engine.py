@@ -181,6 +181,15 @@ def processOrderUpdate(order):
 				position_json["positionSize"] = position_json["positionSize"] + positionSize
 				position.positionSize = position_json["positionSize"]
 
+				position.signalId=position_json["signalId"]
+				position.side=position_json["side"]
+				position.pair=position_json["pair"]
+				position.maxQuantity=position_json["maxQuantity"]
+				position.createDate=parser.parse(position_json["createDate"])
+				position.updateDate=parser.parse(position_json["updateDate"])
+				position.lastEventTime=position_json["lastEventTime"]
+				position.isClosed=position_json["isClosed"]
+
 			else:
 				if position_json["quantity"] == position_json["maxQuantity"]:
 					# todo: if first reduce order - create stop loss order
