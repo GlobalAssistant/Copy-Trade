@@ -170,9 +170,9 @@ def processOrderUpdate(order):
 
 			if increase :
 				# todo: if position was not reduced yet - recreate take profit
-				position.position_json["quantity"] = position_json["quantity"] + order.origQty
-				position.quantity = position.position_json["quantity"]
-				if position.position_json["quantity"] > position_json["maxQuantity"]:
+				position_json["quantity"] = position_json["quantity"] + order.origQty
+				position.quantity = position_json["quantity"]
+				if position_json["quantity"] > position_json["maxQuantity"]:
 					position_json["maxQuantity"] = position_json["maxQuantity"] + order.origQty
 					position.maxQuantity = position_json["maxQuantity"]
 
