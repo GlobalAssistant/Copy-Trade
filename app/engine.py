@@ -195,7 +195,7 @@ def processOrderUpdate(order):
 					# todo: if first reduce order - create stop loss order
 					print("Quantity equals with maxQuantity.")
 				result = position_json["quantity"] - order.origQty
-				if double(result) < 0:
+				if float(result) < 0:
 					print(position_json["side"] + " position " + position_json["pair"] + " quantity is negative.")
 					position_json["isCorrupted"] = True
 					position.isCorrupted = position_json["isCorrupted"]
@@ -213,7 +213,7 @@ def processOrderUpdate(order):
 
 					savePosition(order, position)
 					return True
-				elif double(result) == 0:
+				elif float(result) == 0:
 					 position_json["isClosed"] = True
 					 position.isClosed=position_json["isClosed"]
 					 otype = "exit"
